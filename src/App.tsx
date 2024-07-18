@@ -1,38 +1,55 @@
 import { useCallback } from "react";
 
+import "@xyflow/react/dist/style.css";
 import {
+  Background,
+  Controls,
+  type EdgeChange,
+  type NodeChange,
   type OnConnect,
   ReactFlow,
   addEdge,
-  useEdgesState,
-  useNodesState,
+  applyEdgeChanges,
+  applyNodeChanges,
 } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-
-const initialNodes = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
-];
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+import { useAtom } from "jotai";
+import { defaultEdgeOptions, edgeTypes } from "./edges";
+import { edgesAtom } from "./edges/atom";
+import { type TasphNode, nodeTypes } from "./nodes";
+import { nodesAtom } from "./nodes/atom";
 
 export default function App() {
-  const [nodes, _setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes] = useAtom(nodesAtom);
+  const onNodesChange = (changes: NodeChange<TasphNode>[]) => {
+    setNodes(applyNodeChanges(changes, nodes));
+  };
+
+  const [edges, setEdges] = useAtom(edgesAtom);
+  const onEdgesChange = (changes: EdgeChange[]) => {
+    setEdges(applyEdgeChanges(changes, edges));
+  };
 
   const onConnect: OnConnect = useCallback(
-    params => setEdges(eds => addEdge(params, eds)),
-    [setEdges],
+    connection => setEdges(addEdge(connection, edges)),
+    [edges, setEdges],
   );
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
+        edges={edges}
+        edgeTypes={edgeTypes}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-      />
+        defaultEdgeOptions={defaultEdgeOptions}
+        fitView
+      >
+        <Background />
+        <Controls />
+      </ReactFlow>
     </div>
   );
 }
