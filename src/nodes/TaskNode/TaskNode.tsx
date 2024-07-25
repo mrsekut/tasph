@@ -4,6 +4,7 @@ import {
   type TaskNode as TaskNode_,
   setLinesAtom,
   setTitleAtom,
+  splitAtom,
   taskNodeAtom,
 } from ".";
 import { Editor } from "./Editor";
@@ -13,6 +14,7 @@ export function TaskNode({ id, selected }: NodeProps<TaskNode_>) {
   const { title, lines } = taskNode.data;
   const setTitle = useSetAtom(setTitleAtom(id));
   const setLines = useSetAtom(setLinesAtom(id));
+  const split = useSetAtom(splitAtom);
 
   return (
     <div
@@ -32,6 +34,12 @@ export function TaskNode({ id, selected }: NodeProps<TaskNode_>) {
         lines={lines}
         setLines={setLines}
       />
+
+      <div>
+        <button type="button" onClick={() => split(id)}>
+          分割
+        </button>
+      </div>
 
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
