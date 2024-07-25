@@ -1,8 +1,10 @@
-import type { Node } from "@xyflow/react";
+import { MarkerType, type Node } from "@xyflow/react";
 import { atom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomFamily } from "jotai/utils";
-import type { NodeId } from "../atom";
+import { nanoid } from "nanoid";
+import { edgeAtom, edgeIdsAtom } from "../../edges/atom";
+import { type NodeId, nodeIdsAtom } from "../atom";
 
 export type TaskNode = Node<Task>;
 
@@ -48,3 +50,73 @@ export const setLinesAtom = atomFamily((id: NodeId) =>
     set(taskDataAtom(id), p => ({ ...p, lines }));
   }),
 );
+
+// TODO: clean
+export const splitAtom = atom(null, (get, set, id: string) => {
+  const node = get(taskNodeAtom(id));
+  const lines = node.data.lines;
+
+  // 親の内容を書き換える
+  set(setLinesAtom(id), []);
+
+  lines.forEach((line, index) => {
+    const newId = nanoid();
+    const newPosition = getChildNodePosition(node, index, lines.length);
+
+    set(taskDataAtom(id), p => ({
+      ...p,
+      children: [...p.children, newId],
+    }));
+
+    // linesの分だけnodeを追加する TODO: split:add
+    set(nodeIdsAtom, ids => [...ids, newId]);
+    set(taskNodeAtom(newId), () => ({
+      id: newId,
+      type: "task",
+      position: newPosition,
+      data: {
+        title: line,
+        lines: [],
+        parents: [id],
+        children: [],
+      },
+    }));
+
+    // 親に対してedgeを引く
+    set(edgeIdsAtom, ids => [...ids, newId]);
+    set(edgeAtom(newId), {
+      id: nanoid(),
+      source: newId,
+      target: id,
+      markerStart: "source",
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: "black",
+      },
+    });
+  });
+});
+
+// TODO: 適当
+const getChildNodePosition = (
+  parentNode: Node,
+  index: number,
+  totalChildren: number,
+) => {
+  if (!parentNode?.position || !parentNode?.width || !parentNode?.height) {
+    return { x: 0, y: 0 };
+  }
+
+  const offsetX = -200;
+  const spacingY = 50;
+
+  const baseX = parentNode.position.x + offsetX;
+  const baseY = parentNode.position.y + parentNode.height / 2;
+
+  const positionY = baseY + (index - (totalChildren - 1) / 2) * spacingY;
+
+  return {
+    x: baseX,
+    y: positionY,
+  };
+};
