@@ -7,16 +7,18 @@ import {
   type EdgeChange,
   type NodeChange,
   type OnConnect,
+  Panel,
   ReactFlow,
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
 } from "@xyflow/react";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { defaultEdgeOptions, edgeTypes } from "./edges";
 import { edgesAtom } from "./edges/atom";
 import { type TasphNode, nodeTypes } from "./nodes";
 import { nodesAtom } from "./nodes/atom";
+import { loadAtom, saveAtom } from "./persistence";
 
 export default function App() {
   const [nodes, setNodes] = useAtom(nodesAtom);
@@ -34,6 +36,9 @@ export default function App() {
     [edges, setEdges],
   );
 
+  const load = useSetAtom(loadAtom);
+  const save = useSetAtom(saveAtom);
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <ReactFlow
@@ -49,6 +54,14 @@ export default function App() {
       >
         <Background />
         <Controls />
+        <Panel position="top-left">
+          <button type="button" onClick={load}>
+            load
+          </button>
+          <button type="button" onClick={save}>
+            save
+          </button>
+        </Panel>
       </ReactFlow>
     </div>
   );
