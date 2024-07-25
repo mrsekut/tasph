@@ -51,6 +51,9 @@ export const setLinesAtom = atomFamily((id: NodeId) =>
   }),
 );
 
+export const isRoot = (task: Task) => task.parents.length === 0;
+export const isLeaf = (task: Task) => task.children.length === 0;
+
 // TODO: clean
 export const splitAtom = atom(null, (get, set, id: string) => {
   const node = get(taskNodeAtom(id));
