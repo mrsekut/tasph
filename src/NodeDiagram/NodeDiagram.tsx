@@ -1,7 +1,7 @@
 import type React from "react";
 import { useRef, useState } from "react";
 import type { Pos, TaskId, TaskNode } from "../TaskNode";
-import { Node } from "./Node";
+import { DraggableNode } from "./DraggableNode";
 
 type Props = {
   nodes: TaskNode[];
@@ -12,14 +12,6 @@ type Props = {
 export const NodeDiagram: React.FC<Props> = ({ nodes, moveNode }) => {
   const [draggingNodeId, setDraggingNodeId] = useState<TaskId | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const handleNodeMouseDown = (
-    e: React.MouseEvent<HTMLDivElement>,
-    nodeId: TaskId,
-  ) => {
-    e.stopPropagation();
-    setDraggingNodeId(nodeId);
-  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (draggingNodeId && containerRef.current) {
@@ -43,18 +35,11 @@ export const NodeDiagram: React.FC<Props> = ({ nodes, moveNode }) => {
       onMouseUp={handleMouseUp}
     >
       {nodes.map(node => (
-        <div
+        <DraggableNode
           key={node.id}
-          className="absolute cursor-move"
-          style={{
-            left: `${node.x}px`,
-            top: `${node.y}px`,
-            transform: "translate(-50%, -50%)",
-          }}
-          onMouseDown={e => handleNodeMouseDown(e, node.id)}
-        >
-          <Node key={node.id} node={node} />
-        </div>
+          node={node}
+          onMouseDown={() => setDraggingNodeId(node.id)}
+        />
       ))}
     </div>
   );
