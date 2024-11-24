@@ -1,6 +1,7 @@
 import type React from "react";
 import { useRef, useState } from "react";
 import type { Pos, TaskId, TaskNode } from "../TaskNode";
+import { Node } from "./Node";
 
 type Props = {
   nodes: TaskNode[];
@@ -44,14 +45,16 @@ export const NodeDiagram: React.FC<Props> = ({ nodes, moveNode }) => {
       {nodes.map(node => (
         <div
           key={node.id}
-          className="absolute w-12 h-12 rounded-full cursor-move bg-blue-500"
+          className="absolute cursor-move"
           style={{
             left: `${node.x}px`,
             top: `${node.y}px`,
             transform: "translate(-50%, -50%)",
           }}
           onMouseDown={e => handleNodeMouseDown(e, node.id)}
-        />
+        >
+          <Node key={node.id} node={node} />
+        </div>
       ))}
     </div>
   );
