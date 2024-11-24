@@ -1,8 +1,10 @@
 import { atom } from "jotai";
+import { atomWithStorage } from 'jotai/utils';
 import type { Pos, TaskId, TaskNode } from ".";
 import { dummyNodes } from "./dummy";
 
-export const nodesAtom = atom<TaskNode[]>(dummyNodes)
+// TODO: use jotai-effect
+export const nodesAtom = atomWithStorage<TaskNode[]>('nodes', dummyNodes)
 
 export const moveNodeAtom = atom(null, (get, set, id: TaskId, pos: Pos) => {
   const nodes = get(nodesAtom);
