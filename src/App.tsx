@@ -13,7 +13,7 @@ function App() {
   const moveNode = useSetAtom(moveNodeAtom);
 
   return (
-    <div>
+    <div className="h-screen grid grid-cols-[auto,1fr]">
       <Editor text={text} handleChange={changeText} />
       <NodeDiagram nodes={nodes} moveNode={moveNode} />
     </div>

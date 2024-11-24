@@ -38,7 +38,7 @@ export const NodeDiagram: React.FC<Props> = ({ nodes, moveNode }) => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-screen bg-gray-100"
+      className="relative w-full h-full bg-gray-100"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
