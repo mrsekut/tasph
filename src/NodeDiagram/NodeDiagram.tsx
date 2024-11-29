@@ -1,7 +1,7 @@
-import type React from "react";
-import { useRef, useState } from "react";
-import type { Pos, TaskId, TaskNode } from "../TaskNode";
-import { DraggableNode } from "./DraggableNode";
+import type React from 'react';
+import { useRef, useState } from 'react';
+import type { Pos, TaskId, TaskNode } from '../TaskNode';
+import { DraggableNode } from './DraggableNode';
 
 type Props = {
   nodes: TaskNode[];

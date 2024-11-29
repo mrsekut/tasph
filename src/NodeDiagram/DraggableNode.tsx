@@ -1,6 +1,6 @@
-import type React from "react";
-import type { TaskNode } from "../TaskNode";
-import { Node } from "./Node";
+import type React from 'react';
+import type { TaskNode } from '../TaskNode';
+import { Node } from './Node';
 
 type Props = {
   node: TaskNode;
@@ -13,7 +13,7 @@ export const DraggableNode: React.FC<Props> = ({ node, onMouseDown }) => (
     style={{
       left: `${node.x}px`,
       top: `${node.y}px`,
-      transform: "translate(-50%, -50%)",
+      transform: 'translate(-50%, -50%)',
     }}
     onMouseDown={onMouseDown}
   >

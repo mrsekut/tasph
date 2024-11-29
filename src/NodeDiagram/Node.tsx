@@ -1,5 +1,5 @@
-import type React from "react";
-import type { TaskNode } from "../TaskNode";
+import type React from 'react';
+import type { TaskNode } from '../TaskNode';
 
 type Props = {
   node: TaskNode;
