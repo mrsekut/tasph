@@ -1,23 +1,24 @@
-import { atom } from "jotai";
-import { atomWithStorage } from 'jotai/utils';
-import type { Pos, Task, TaskId, TaskNode } from ".";
+import { atom } from 'jotai';
+import type { Pos, Task, TaskId, TaskNode } from '.';
 
-// TODO: use jotai-effect
-export const nodesAtom = atomWithStorage<TaskNode[]>('nodes', [])
+// TODO: use jotai-effect, name
+export const nodesAtom = atom<TaskNode[]>([]);
 
 // TODO: name:task?taskNode?
-// TODO: 座標はいい感じにずらしたい
+// TODO: 座標はいい感じにずらしたい, 既にそこにあったら少しズラス
 export const addNodeAtom = atom(null, (get, set, task: Task) => {
   const nodes = get(nodesAtom);
-  const newNodes = { ...task, x: 100, y: 100 }
+  const newNodes = { ...task, x: 100, y: 100 };
   set(nodesAtom, [...nodes, newNodes]);
-})
-
+});
 
 export const removeNodeAtom = atom(null, (get, set, id: TaskId) => {
   const nodes = get(nodesAtom);
-  set(nodesAtom, nodes.filter(node => node.id !== id));
-})
+  set(
+    nodesAtom,
+    nodes.filter(node => node.id !== id),
+  );
+});
 
 export const moveNodeAtom = atom(null, (get, set, id: TaskId, pos: Pos) => {
   const nodes = get(nodesAtom);
@@ -29,4 +30,4 @@ export const moveNodeAtom = atom(null, (get, set, id: TaskId, pos: Pos) => {
     nodesAtom,
     nodes.map(n => (n.id === id ? { ...n, ...pos } : n)),
   );
-})
+});

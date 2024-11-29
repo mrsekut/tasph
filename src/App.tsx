@@ -4,8 +4,11 @@ import './index.css';
 import { Editor } from './Editor/Editor';
 import { changeTextAtom, textAtom } from './Editor/atom';
 import { moveNodeAtom, nodesAtom } from './TaskNode/atom';
+import { useSyncStore } from './Store';
 
 function App() {
+  useSyncStore();
+
   const text = useAtomValue(textAtom);
   const changeText = useSetAtom(changeTextAtom);
 
