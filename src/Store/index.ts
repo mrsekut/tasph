@@ -10,7 +10,7 @@ type Store = {
   nodes: TaskNode[];
 };
 
-const storeAtom = atomWithStorage<Store>(
+export const storeAtom = atomWithStorage<Store>(
   'store',
   { text: '', nodes: [] },
   createJSONStorage<Store>(),

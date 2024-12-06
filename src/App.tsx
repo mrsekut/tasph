@@ -6,6 +6,7 @@ import { changeTextAtom, textAtom } from './Editor/atom';
 import { moveNodeAtom, nodesAtom } from './TaskNode/atom';
 import { useSyncStore } from './Store';
 import { Suspense } from 'react';
+import { CopyButton, PasteButton } from './Store/clipboard';
 
 function App() {
   const text = useAtomValue(textAtom);
@@ -16,6 +17,12 @@ function App() {
 
   return (
     <div className="h-screen grid grid-cols-[auto,1fr]">
+      {/* TODO: style */}
+      <div className="absolute grid grid-cols-2 gap-1">
+        <CopyButton />
+        <PasteButton />
+      </div>
+
       <Editor text={text} handleChange={changeText} />
       <NodeDiagram nodes={nodes} moveNode={moveNode} />
 
