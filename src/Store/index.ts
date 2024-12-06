@@ -1,7 +1,6 @@
-import { atom, useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { atomEffect } from 'jotai-effect';
 import { atomWithStorage, createJSONStorage } from 'jotai/utils';
-import { useEffect } from 'react';
 import { textAtom } from '../Editor/atom';
 import type { TaskNode } from '../TaskNode';
 import { nodesAtom } from '../TaskNode/atom';
@@ -18,35 +17,20 @@ const storeAtom = atomWithStorage<Store>(
   { getOnInit: true },
 );
 
-const isLoadedAtom = atom(false);
-
-// save
 const saveAtom = atomEffect((get, set) => {
   const nodes = get(nodesAtom);
   const text = get(textAtom);
-
   set(storeAtom, { nodes, text });
 });
 
-// load
-const initializeAtom = atom(null, (get, set) => {
+const loadAtom = atomEffect((get, set) => {
   const { nodes, text } = get(storeAtom);
-
-  if (!get(isLoadedAtom)) {
-    set(nodesAtom, nodes);
-    set(textAtom, text);
-
-    set(isLoadedAtom, true);
-  }
+  set(nodesAtom, nodes);
+  set(textAtom, text);
 });
 
 export const useSyncStore = () => {
-  // save
+  // initialize時にloadを優先するため、loadを先に書く
+  useAtom(loadAtom);
   useAtom(saveAtom);
-
-  // load
-  const initialize = useSetAtom(initializeAtom);
-  useEffect(() => {
-    initialize();
-  }, []);
 };
